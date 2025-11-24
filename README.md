@@ -61,10 +61,6 @@ Sıfırdan tasarlanmış, hafif ve eğitim süresi kısa bir Evrişimsel Sinir A
 
 Bu model, özellikle daha basit sahneleri ayırt etmede başarılı olsa da, benzer perspektiflerde (örn. FPS vs TPS) zaman zaman hataya düşebilmektedir.
 
-## 🧱 GameCamNet Mimarisi
-
-Aşağıda, sıfırdan geliştirilen GameCamNet modelinin katman yapısı gösterilmektedir:
-
 
 ## 🧱 GameCamNet Mimarisi (Custom CNN)
 
@@ -130,12 +126,16 @@ Bu model, farklı oyunlardan gelen görüntülerde yüksek genelleme başarısı
 
 ---
 
-## 📊 Eğitim Sonuçları (Özet)
+## 🧪 Eğitim Sonuçları
 
-| Model              | Doğruluk (Val) | Notlar                                   |
-|--------------------|----------------|------------------------------------------|
-| GameCamNet (CNN)   | ≈ %86          | Hafif, hızlı fakat karmaşık sahnelerde zorlanıyor |
-| ResNet50           | ≈ %99          | Güçlü genelleme, üretim için seçilen model        |
+| Model | Epoch | En İyi Val. Accuracy | Train Accuracy | Train Loss | Val Loss |
+|--------|--------|----------------------|----------------|-------------|----------|
+| GameCamNet | 15 | **86.38%** | 88.72% | 0.3217 | 0.3579 |
+| ResNet50 | 10 | **98.92%** | 99.53% | 0.0149 | 0.0299 |
+
+> 🔎 Not: ResNet50 modeli ImageNet ön-eğitimli olup, son katman 5 sınıfa göre yeniden eğitilmiştir.  
+> GameCamNet sıfırdan tasarlanmış, kompakt bir CNN mimarisidir.
+
 
 ---
 ## Eğitim Metrikleri
