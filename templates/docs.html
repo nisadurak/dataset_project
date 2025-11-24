@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>InfiniteX · Dokümantasyon</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="nx-header">
+    <div class="nx-logo">
+        <span class="nx-logo-mark">∞</span>
+        <span class="nx-logo-text">InfiniteX</span>
+    </div>
+
+    <nav class="nx-nav">
+        <a href="/" class="nx-nav-link">Analyzer</a>
+        <a href="https://infinitex.space" class="nx-nav-link" target="_blank">Store</a>
+        <a class="nx-nav-link active">Docs</a>
+    </nav>
+</header>
+
+<main class="nx-docs">
+
+    <h1>📘 Kamera Perspektifi Sınıflandırma – Dokümantasyon</h1>
+    <p class="nx-doc-intro">
+        Bu doküman, InfiniteX için geliştirilen oyun ekran görüntüsü sınıflandırma sisteminin
+        veri hazırlama sürecini, kullanılan yapay zeka modellerini, eğitim sonuçlarını ve web arayüzünün
+        çalışma prensibini özetler.
+    </p>
+
+    <!-- 1. Veri Kümesi -->
+    <section>
+        <h2>1. Veri Kümesi Hazırlığı</h2>
+        <p>
+            Çalışmada beş farklı kamera perspektifi için oyun videoları toplanmıştır:
+            <strong>First-Person, Third-Person, Isometric, Top-Down ve Side-Scroller</strong>.
+        </p>
+
+        <ul>
+            <li>Her kategori için 5 farklı oyun seçildi.</li>
+            <li>Videolar 1–5 saat arası uzunluktaydı.</li>
+            <li>Her videodan başlangıç, orta ve son kısımlardan 3’er dakikalık segmentler alındı.</li>
+            <li>FFmpeg ile saniyede 1 kare olacak şekilde frame çıkarıldı.</li>
+        </ul>
+
+        <p><strong>Toplam veri:</strong> ~15.658 görüntü</p>
+        <p><strong>Kategori başına:</strong> ~2.800–3.800 görüntü</p>
+    </section>
+
+    <!-- 2. Modeller -->
+    <section>
+        <h2>2. Kullanılan Modeller</h2>
+
+        <h3>2.1 GameCamNet (Özel CNN Modeli)</h3>
+        <p>
+            Proje kapsamında sıfırdan tasarlanan hafif bir Evrişimsel Sinir Ağıdır.
+            Eğitim süresini kısaltmak için daha az parametreli ve hızlı çalışacak şekilde tasarlanmıştır.
+        </p>
+
+        <ul>
+            <li>4 adet Conv–BatchNorm–ReLU bloğu</li>
+            <li>AdaptiveAvgPool2D + 2 Fully Connected katman</li>
+            <li>Dropout ile düzenlileştirme</li>
+            <li>Toplam doğruluk (val): <strong>≈ %86</strong></li>
+        </ul>
+
+        <h3>2.2 ResNet50 (Transfer Learning)</h3>
+        <p>
+            ImageNet üzerinde önceden eğitilmiş, derin ve güçlü bir mimaridir.
+            Son katmanı 5 sınıfa göre yeniden düzenlenmiş ve veri kümesi üzerinde ince ayar yapılmıştır.
+        </p>
+
+        <ul>
+            <li>Önceden eğitilmiş katmanlar büyük ölçüde donduruldu</li>
+            <li>Son tam bağlı katman 5 sınıfa göre yeniden eğitildi</li>
+            <li>En iyi doğruluk (val): <strong>≈ %99</strong></li>
+        </ul>
+    </section>
+
+    <!-- 3. Eğitim Sonuçları -->
+    <section>
+        <h2>3. Eğitim Sonuçları</h2>
+
+        <div class="nx-metric-grid">
+            <div class="nx-metric-card">
+                <h3>CNN · GameCamNet</h3>
+                <p class="nx-metric-value">≈ %86</p>
+                <p class="nx-metric-label">Doğruluk (Validation)</p>
+
+                <div class="nx-metric-bar">
+                    <div class="nx-metric-fill" style="width: 86%;"></div>
+                </div>
+
+                <ul>
+                    <li>Hafif mimari</li>
+                    <li>Kısa eğitim süresi</li>
+                    <li>Benzer perspektiflerde (TPS vs FPS) daha çok hata</li>
+                </ul>
+            </div>
+
+            <div class="nx-metric-card">
+                <h3>ResNet50</h3>
+                <p class="nx-metric-value">≈ %99</p>
+                <p class="nx-metric-label">Doğruluk (Validation)</p>
+
+                <div class="nx-metric-bar">
+                    <div class="nx-metric-fill" style="width: 99%;"></div>
+                </div>
+
+                <ul>
+                    <li>Güçlü genelleme</li>
+                    <li>Daha yüksek parametre sayısı</li>
+                    <li>Üretim ortamı için tercih edilen model</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Veri İstatistikleri -->
+    <section>
+        <h2>4. Veri İstatistikleri</h2>
+        <p>Aşağıdaki tablo, her perspektif için yaklaşık görüntü sayısını göstermektedir.</p>
+
+        <table class="nx-table nx-table-doc">
+            <thead>
+            <tr>
+                <th>Perspektif</th>
+                <th>Görüntü Sayısı</th>
+                <th>Dağılım</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>First-Person</td>
+                <td>3.824</td>
+                <td>
+                    <div class="nx-conf-bar-mini">
+                        <div class="nx-conf-fill-mini" style="width: 24.42%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Isometric</td>
+                <td>2.826</td>
+                <td>
+                    <div class="nx-conf-bar-mini">
+                        <div class="nx-conf-fill-mini" style="width: 18.05%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Side-Scroller</td>
+                <td>3.150</td>
+                <td>
+                    <div class="nx-conf-bar-mini">
+                        <div class="nx-conf-fill-mini" style="width: 20.12%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Third-Person</td>
+                <td>2.914</td>
+                <td>
+                    <div class="nx-conf-bar-mini">
+                        <div class="nx-conf-fill-mini" style="width: 18.61%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Top-Down</td>
+                <td>2.944</td>
+                <td>
+                    <div class="nx-conf-bar-mini">
+                        <div class="nx-conf-fill-mini" style="width: 18.80%;"></div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 5. Web Uygulaması -->
+    <section>
+        <h2>5. Web Arayüzü ve Çalışma Mantığı</h2>
+        <p>
+            Kullanıcı yüklenen ekran görüntüsünü Flask sunucusuna gönderir. Sunucu görüntüyü işler,
+            seçilen model ile tahmin alır ve her iki modelin sonuçlarını karşılaştırmalı olarak kullanıcıya gösterir.
+        </p>
+
+        <ul>
+            <li>Frontend: HTML + CSS (InfiniteX Neon Tasarım)</li>
+            <li>Backend: Python Flask</li>
+            <li>Inference: PyTorch (CPU)</li>
+            <li>Upload klasörü: <code>static/uploads/</code></li>
+        </ul>
+    </section>
+
+    <!-- 6. Tahmin Akış Şeması -->
+    <section>
+        <h2>6. Tahmin Akışı</h2>
+
+        <pre class="nx-code">
+Kullanıcı görüntü yükler →
+   Flask dosyayı kaydeder →
+      Görüntü ön işleme (resize + normalize) →
+         ResNet50 ve CNN ile tahmin →
+             Softmax ile olasılıklar →
+                 Top-3 sonuçlar & açıklama →
+                     Sonuç arayüzü
+        </pre>
+    </section>
+
+</main>
+
+<footer class="nx-footer">
+    <span>InfiniteX · Kamera Perspektifi Sınıflandırma Dokümantasyonu</span>
+</footer>
+
+</body>
+</html>

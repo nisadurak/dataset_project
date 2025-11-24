@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InfiniteX · Camera Perspective Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="nx-header">
+    <div class="nx-logo">
+        <span class="nx-logo-mark">∞</span>
+        <span class="nx-logo-text">InfiniteX</span>
+    </div>
+
+    <nav class="nx-nav">
+        <a href="#" class="nx-nav-link active">Analyzer</a>
+        <a href="https://infinitex.space" class="nx-nav-link" target="_blank">Store</a>
+        <a href="/docs" class="nx-nav-link">Docs</a>
+    </nav>
+</header>
+
+<main class="nx-main">
+
+    <!-- Sol: Hero metni -->
+    <section class="nx-hero">
+        <h1>Game Camera Perspective Analyzer</h1>
+        <p>
+            Upload a gameplay screenshot and let our model classify its camera perspective:
+            First-Person, Third-Person, Isometric, Top-Down or Side-Scroller.
+        </p>
+
+        <ul class="nx-hero-list">
+            <li>Trained on real gameplay footage</li>
+            <li>Two-stage experiment: custom CNN vs ResNet50</li>
+            <li>Built with PyTorch & Flask</li>
+        </ul>
+    </section>
+
+    <!-- Sağ: Upload paneli -->
+    <section class="nx-panel">
+
+        <div class="nx-panel-header">
+            <h2>Analyze Screenshot</h2>
+            <p>Drop a frame from any game and detect its camera perspective.</p>
+        </div>
+
+        <form action="/analyze" method="POST" enctype="multipart/form-data" class="nx-form">
+            <label class="nx-file-input">
+                <span class="nx-file-text">Click to choose an image or drop it here</span>
+                <input type="file" name="image" accept="image/*" required>
+            </label>
+<div class="nx-model-select">
+    <label>Select Model:</label>
+
+    <label class="nx-radio">
+        <input type="radio" name="model" value="resnet" checked>
+        <span>ResNet50 (Recommended)</span>
+    </label>
+
+    <label class="nx-radio">
+        <input type="radio" name="model" value="cnn">
+        <span>GameCamNet (Custom CNN)</span>
+    </label>
+</div>
+            <button type="submit" class="nx-primary-btn">
+                Analyze Perspective
+            </button>
+        </form>
+
+        <div class="nx-panel-footer">
+            <span class="nx-tag">Model</span>
+            <span class="nx-tag nx-tag-alt">GameCamNet (Custom CNN) . ResNet50 (fine-tuned)</span>
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="nx-footer">
+    <span>Built for internship project · Camera Perspective Classifier</span>
+</footer>
+
+</body>
+</html>

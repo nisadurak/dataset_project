@@ -1,0 +1,60 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.py.class
+
+# === Virtual Environment ===
+venv/
+env/
+.venv/
+
+# === Logs & Outputs ===
+*.log
+*.out
+*.err
+
+# === Model Files ===
+models/*.pth
+models/*.pt
+
+# === Datasets ===
+First-Person/
+Third-Person/
+Isometric/
+Side-Scroller/
+Top-Down/
+count_images.py
+dataset_raw/
+
+
+*.zip
+*.rar
+*.7z
+
+# === Flask Uploads ===
+static/uploads/*
+
+# === IDE & System Files ===
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# === Build & Cache ===
+*.egg-info/
+.eggs/
+build/
+dist/
+.cache/
+.ipynb_checkpoints/
+
+# === Environment & Config ===
+.env
+*.env
+config.json
+secrets.json
+
+# === OS Specific ===
+desktop.ini

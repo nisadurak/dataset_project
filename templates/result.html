@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis Result · InfiniteX Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="nx-header">
+    <div class="nx-logo">
+        <span class="nx-logo-mark">∞</span>
+        <span class="nx-logo-text">InfiniteX</span>
+    </div>
+
+    <nav class="nx-nav">
+        <a href="/" class="nx-nav-link">Analyzer</a>
+        <a href="https://infinitex.space" class="nx-nav-link" target="_blank">Store</a>
+        <a href="/docs" class="nx-nav-link">Docs</a>
+    </nav>
+</header>
+
+<main class="nx-main nx-main-result">
+
+    <!-- Sol panel: Görsel + seçilen model -->
+    <section class="nx-panel nx-panel-left">
+
+        <div class="nx-panel-header">
+            <h2>Preview</h2>
+            <p>Uploaded gameplay frame · prediction by {{ used_model }}.</p>
+        </div>
+
+        <div class="nx-image-wrapper">
+            <img src="/{{ image_path }}" alt="Uploaded Image">
+        </div>
+
+        <div class="nx-used-model">
+            Model Used: <strong>{{ used_model }}</strong>
+        </div>
+
+        <div class="nx-prediction">
+            <span class="nx-label">Predicted Perspective</span>
+            <div class="nx-predicted-label">{{ prediction }}</div>
+
+            <div class="nx-conf-bar">
+                <div class="nx-conf-fill" style="width: {{ confidence * 100 }}%;"></div>
+            </div>
+            <div class="nx-conf-text">
+                {{ (confidence * 100) | round(2) }}% confidence
+            </div>
+        </div>
+
+        <a href="/" class="nx-secondary-btn">← Analyze Another Image</a>
+    </section>
+
+    <!-- Sağ panel: Top-3 + model karşılaştırma + açıklama -->
+    <section class="nx-panel nx-panel-right">
+
+        <div class="nx-panel-header">
+    <h2>Model Insights</h2>
+    <p>Top-3 predictions for both models: {{ used_model }} and {{ other_model }}.</p>
+</div>
+
+<!-- ============================= -->
+<!--  Top-3: SEÇİLEN MODEL         -->
+<!-- ============================= -->
+
+<h3 class="nx-subtitle">Top-3 – {{ used_model }}</h3>
+
+<table class="nx-table">
+    <thead>
+    <tr>
+        <th>Perspective</th>
+        <th>Confidence</th>
+    </tr>
+    </thead>
+    <tbody>
+{% for label, score in top3 %}
+<tr>
+    <td>
+        {{ label }}
+        <div class="nx-conf-bar-mini">
+            <div class="nx-conf-fill-mini" style="width: {{ score * 100 }}%;"></div>
+        </div>
+    </td>
+    <td>{{ (score * 100) | round(2) }}%</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<!-- ============================= -->
+<!--  Top-3: DİĞER MODEL           -->
+<!-- ============================= -->
+
+<h3 class="nx-subtitle other-model-title">Top-3 – {{ other_model }}</h3>
+
+<table class="nx-table nx-table-secondary">
+    <thead>
+    <tr>
+        <th>Perspective</th>
+        <th>Confidence</th>
+    </tr>
+    </thead>
+   <tbody>
+{% for label, score in other_top3 %}
+<tr>
+    <td>
+        {{ label }}
+        <div class="nx-conf-bar-mini">
+            <div class="nx-conf-fill-mini" style="width: {{ score * 100 }}%;"></div>
+        </div>
+    </td>
+    <td>{{ (score * 100) | round(2) }}%</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+        <!-- Açıklama -->
+        <div class="nx-explain">
+            <h3>What does "{{ prediction }}" mean?</h3>
+
+            {% if prediction == "First-Person" %}
+            <p>The camera is at the character's eye level. You see the world directly through the protagonist’s eyes.</p>
+
+            {% elif prediction == "Third-Person" %}
+            <p>The camera follows the player from behind or slightly above. The character stays visible on screen.</p>
+
+            {% elif prediction == "Top-Down" %}
+            <p>The camera looks straight down from above. Often used in strategy or tactical games.</p>
+
+            {% elif prediction == "Isometric" %}
+            <p>The camera is angled diagonally downward, creating a pseudo-3D look with clear view of the scene.</p>
+
+            {% elif prediction == "Side-Scroller" %}
+            <p>The camera shows the action from a side view, common in 2D platformers and action games.</p>
+            {% endif %}
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="nx-footer">
+    <span>Experiment: GameCamNet vs ResNet50 · ResNet50 ~99% · GameCamNet ~86%</span>
+</footer>
+
+</body>
+</html>
