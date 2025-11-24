@@ -7,7 +7,7 @@
 
 ## İçerik Videsu
 
-[▶️ Videoyu İzle](https://github.com/user-attachments/assets/885a8cd0-a84f-4caa-b8ff-e117c951268a)
+[▶️ Videoyu İzle](https://github.com/user-attachments/assets/a95baa0f-e06e-4cf8-a5df-597fba7686be)
 ---
 ---
 
