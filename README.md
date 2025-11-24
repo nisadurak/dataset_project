@@ -61,6 +61,50 @@ Sıfırdan tasarlanmış, hafif ve eğitim süresi kısa bir Evrişimsel Sinir A
 
 Bu model, özellikle daha basit sahneleri ayırt etmede başarılı olsa da, benzer perspektiflerde (örn. FPS vs TPS) zaman zaman hataya düşebilmektedir.
 
+## 🧱 GameCamNet Mimarisi
+
+Aşağıda, sıfırdan geliştirilen GameCamNet modelinin katman yapısı gösterilmektedir:
+
+```text
+Input (3x224x224)
+│
+├── Conv2d(3 → 32, kernel_size=3, padding=1)
+├── BatchNorm2d(32)
+├── ReLU
+├── MaxPool2d(2)
+│
+├── Conv2d(32 → 64, kernel_size=3, padding=1)
+├── BatchNorm2d(64)
+├── ReLU
+├── MaxPool2d(2)
+│
+├── Conv2d(64 → 128, kernel_size=3, padding=1)
+├── BatchNorm2d(128)
+├── ReLU
+├── MaxPool2d(2)
+│
+├── Conv2d(128 → 256, kernel_size=3, padding=1)
+├── BatchNorm2d(256)
+├── ReLU
+├── MaxPool2d(2)
+│
+├── AdaptiveAvgPool2d((1,1))
+├── Flatten
+├── Linear(256 → 128)
+├── ReLU
+├── Dropout(0.5)
+└── Linear(128 → 5)  →  [First, Third, Iso, Top, Side]
+
+Bu yapı:
+
+Toplam 4 evrişim bloğu içerir.
+
+Parametre sayısı: yaklaşık 1.2 milyon.
+
+Aktivasyon fonksiyonu olarak ReLU, optimizasyon için Adam kullanılmıştır.
+
+Küçük boyutuna rağmen güçlü genelleme yeteneği göstermiştir.
+```
 ---
 
 ### 2️⃣ ResNet50 (Transfer Learning)
@@ -73,7 +117,7 @@ ImageNet üzerinde önceden eğitilmiş, derin ve güçlü bir model. Bu projede
 - Eğitim sadece son katman(lar) üzerinde yoğunlaştırıldı
 - Validation doğruluğu: **≈ %99**
 
-Bu model, farklı oyunlardan gelen görüntülerde yüksek genelleme başarısı göstererek kamera perspektiflerini çok büyük oranda doğru tahmin edebilmektedir.
+Bu model, farklı oyunlardan gelen görüntülerde yüksek genelleme başarısı göstererek kamera perspektiflerini çok büyük oranda doğru tahmin edebilmektedir. 
 
 ---
 
