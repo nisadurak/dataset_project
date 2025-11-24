@@ -66,6 +66,12 @@ Bu model, özellikle daha basit sahneleri ayırt etmede başarılı olsa da, ben
 
 Bu proje için sıfırdan tasarlanan **GameCamNet**, 4 evrişim bloğu ve hafif bir sınıflandırma başlığından oluşan kompakt bir CNN mimarisidir.
 
+### 💡 Neden Bu Mimari?
+- **4 blok**: Fazla derin olmadan yeterli soyutlama sağlar.  
+- **BatchNorm + Dropout**: Hem öğrenmeyi stabilize eder hem aşırı uyumu önler.  
+- **Adaptive Pooling**: Farklı çözünürlüklerdeki kareleri destekler.  
+- **Düşük hesaplama maliyeti**: CPU üzerinde rahat eğitilebilir.
+
 ### Katman Yapısı
 
 ```text
@@ -110,6 +116,7 @@ Farklı kamera perspektiflerine duyarlı feature map’ler üretmeyi hedefler,
 Eğitim süresini kısa, inference’ı hızlı tutar.
 
 ```
+
 ---
 
 ### 2️⃣ ResNet50 (Transfer Learning)
