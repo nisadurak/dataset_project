@@ -65,45 +65,54 @@ Bu model, özellikle daha basit sahneleri ayırt etmede başarılı olsa da, ben
 
 Aşağıda, sıfırdan geliştirilen GameCamNet modelinin katman yapısı gösterilmektedir:
 
+
+## 🧱 GameCamNet Mimarisi (Custom CNN)
+
+Bu proje için sıfırdan tasarlanan **GameCamNet**, 4 evrişim bloğu ve hafif bir sınıflandırma başlığından oluşan kompakt bir CNN mimarisidir.
+
+### Katman Yapısı
+
 ```text
-Input (3x224x224)
+Girdi: 3 x 224 x 224 (RGB görüntü)
 │
-├── Conv2d(3 → 32, kernel_size=3, padding=1)
-├── BatchNorm2d(32)
-├── ReLU
-├── MaxPool2d(2)
+├─ Conv2d(3 → 32, kernel_size=3, padding=1)
+├─ BatchNorm2d(32)
+├─ ReLU
+├─ MaxPool2d(2)              → 32 x 112 x 112
 │
-├── Conv2d(32 → 64, kernel_size=3, padding=1)
-├── BatchNorm2d(64)
-├── ReLU
-├── MaxPool2d(2)
+├─ Conv2d(32 → 64, kernel_size=3, padding=1)
+├─ BatchNorm2d(64)
+├─ ReLU
+├─ MaxPool2d(2)              → 64 x 56 x 56
 │
-├── Conv2d(64 → 128, kernel_size=3, padding=1)
-├── BatchNorm2d(128)
-├── ReLU
-├── MaxPool2d(2)
+├─ Conv2d(64 → 128, kernel_size=3, padding=1)
+├─ BatchNorm2d(128)
+├─ ReLU
+├─ MaxPool2d(2)              → 128 x 28 x 28
 │
-├── Conv2d(128 → 256, kernel_size=3, padding=1)
-├── BatchNorm2d(256)
-├── ReLU
-├── MaxPool2d(2)
+├─ Conv2d(128 → 256, kernel_size=3, padding=1)
+├─ BatchNorm2d(256)
+├─ ReLU
+├─ MaxPool2d(2)              → 256 x 14 x 14
 │
-├── AdaptiveAvgPool2d((1,1))
-├── Flatten
-├── Linear(256 → 128)
-├── ReLU
-├── Dropout(0.5)
-└── Linear(128 → 5)  →  [First, Third, Iso, Top, Side]
+└─ Classifier Bloğu:
+    ├─ AdaptiveAvgPool2d((1, 1))   → 256 x 1 x 1
+    ├─ Flatten                     → 256
+    ├─ Linear(256 → 128)
+    ├─ ReLU
+    ├─ Dropout(p=0.5)
+    └─ Linear(128 → 5)  # 5 sınıf:
+                        # [First-Person, Isometric, Side-Scroller, Third-Person, Top-Down]
 
-Bu yapı:
 
-Toplam 4 evrişim bloğu içerir.
+Bu tasarım:
 
-Parametre sayısı: yaklaşık 1.2 milyon.
+Parametre sayısını makul seviyede tutarken,
 
-Aktivasyon fonksiyonu olarak ReLU, optimizasyon için Adam kullanılmıştır.
+Farklı kamera perspektiflerine duyarlı feature map’ler üretmeyi hedefler,
 
-Küçük boyutuna rağmen güçlü genelleme yeteneği göstermiştir.
+Eğitim süresini kısa, inference’ı hızlı tutar.
+
 ```
 ---
 
