@@ -146,8 +146,31 @@ Kullanıcı görüntü yükler →
 | **Side-Scroller**    | ![Side-Scroller](uploads/sidescroll-analiz.png)     | %83.1              |
 | **First-Person (1)** | ![First-Person](uploads/first-person-analiz.png)    | %70.4              |
 | **First-Person (2)** | ![First-Person 2](uploads/first-person-analiz2.png) | %84.8              |
+---
+### 📊 GameCamNet (Custom CNN) – Değerlendirme
 
+Validation seti üzerinde GameCamNet için elde edilen metrikler:
 
+- Accuracy: **%86.38**
+- Macro F1: **%84.77**
+- Macro Precision: **%86.13**
+- Macro Recall: **%85.41**
+- Toplam örnek: **1483**
+
+Sınıf bazlı F1 skorları:
+
+| Perspektif     | F1 Skoru |
+|----------------|---------|
+| First-Person   | **0.80** |
+| Isometric      | **0.91** |
+| Side-Scroller  | **0.78** |
+| Third-Person   | **0.76** |
+| Top-Down       | **0.99** |
+
+Model özellikle **Top-Down** ve **Isometric** sahnelerde çok yüksek performans gösterirken,  
+**First-Person** ve **Third-Person** sınıflarında zaman zaman karışmalar gözlenmiştir.  
+Bu yüzden GameCamNet, hafif ve hızlı bir baseline olsa da, daha hassas ayrımlar için ResNet50 kadar güçlü değildir.
+---
 
 ```bash
 InfiniteX/
