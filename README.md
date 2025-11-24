@@ -14,7 +14,7 @@
 ## 🚀 Özellikler
 
 - 🔍 Görsel sınıflandırma: 5 kamera perspektifi  
-- ⚙️ İki model karşılaştırması: `ResNet50` (transfer learning) vs `GameCamNet` (sıfırdan CNN)  
+- ⚙️ İki model karşılaştırması: `ResNet50` (transfer learning) vs `GameCamNet` (sıfırdan oluşturulmuş CNN)  
 - 💻 Web arayüzü: Flask + HTML + CSS (InfiniteX neon teması)  
 - 🧠 Model eğitimi: PyTorch  
 - 📊 Karşılaştırmalı çıktı: Her iki modelin Top-3 tahmini aynı ekranda görüntülenir  
@@ -110,9 +110,6 @@ python -m venv venv
 venv\Scripts\activate
 # macOS / Linux:
 source venv/bin/activate
-
-# Gereksinimleri yükle
-pip install -r requirements.txt
 
 # Uygulamayı başlat
 python app.py
