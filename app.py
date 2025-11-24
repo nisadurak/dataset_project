@@ -43,7 +43,7 @@ def analyze():
     resnet_pred, resnet_conf, resnet_top3 = predict_with_model("resnet", save_path)
     cnn_pred, cnn_conf, cnn_top3 = predict_with_model("cnn", save_path)
 
-    # Seçilen modeli "ana" yap, diğerini karşılaştırma için kullan
+    
     if model_choice == "cnn":
         used_model = "GameCamNet"
         prediction = cnn_pred
