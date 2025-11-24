@@ -1,3 +1,5 @@
+
+
 # 🎮 InfiniteX — Kamera Perspektifi Sınıflandırma
 
 > Oyun ekran görüntülerini analiz ederek kameranın **First-Person**, **Third-Person**, **Isometric**, **Top-Down** veya **Side-Scroller** perspektiflerinden hangisine ait olduğunu tahmin eden yapay zeka projesi.
@@ -7,50 +9,114 @@
 
 [▶️ Videoyu İzle](https://github.com/user-attachments/assets/885a8cd0-a84f-4caa-b8ff-e117c951268a)
 ---
+---
 
 ## 🚀 Özellikler
 
-- 🔍 Görsel sınıflandırma: 5 perspektif türü  
-- ⚙️ İki model karşılaştırması: `ResNet50` vs `GameCamNet (Custom CNN)`  
-- 💻 Web arayüzü: Flask + HTML + CSS (InfiniteX Neon Tasarımı)  
-- 🧠 Eğitim ortamı: PyTorch  
+- 🔍 Görsel sınıflandırma: 5 kamera perspektifi  
+- ⚙️ İki model karşılaştırması: `ResNet50` (transfer learning) vs `GameCamNet` (sıfırdan CNN)  
+- 💻 Web arayüzü: Flask + HTML + CSS (InfiniteX neon teması)  
+- 🧠 Model eğitimi: PyTorch  
+- 📊 Karşılaştırmalı çıktı: Her iki modelin Top-3 tahmini aynı ekranda görüntülenir  
 
+---
+
+## 📂 Veri Kümesi
+
+Bu projede kullanılan veri kümesi, farklı oyun türlerinden alınan gerçek gameplay videolarından oluşturulmuştur.
+
+- **Perspektif kategorileri:**
+  - First-Person
+  - Third-Person
+  - Isometric
+  - Top-Down
+  - Side-Scroller
+- **Her kategori için:**
+  - 5 farklı oyun seçildi.
+  - Her oyunun uzun gameplay videolarından başlangıç / orta / son kısımlarından ~3’er dakikalık segmentler alındı.
+  - FFmpeg ile bu segmentlerden **saniyede 1 kare** olacak şekilde görüntü çıkarıldı.
+- **Toplam veri:**
+  - Toplam görüntü: ≈ **15.6K** frame  
+  - Kategori başına: ≈ **2.8K – 3.8K** görüntü  
+- Veri, eğitim ve doğrulama için **train / val** olarak ayrıldı (örneğin %80 / %20).
+
+Bu veri kümesi, oyunların farklı kamera açılarına göre çeşitlilik sağlaması için özel olarak toplanmıştır.
 
 ---
 
 ## 🧩 Kullanılan Modeller
 
-### **1. GameCamNet (Custom CNN)**
-- Veri seti her kategori için belirli oyunların videolarından görüntü alınarak toplanmıştır. 
-- Sıfırdan tasarlanmış, hafif mimari
-- 4 adet Conv–BatchNorm–ReLU bloğu  
-- 2 Fully Connected katman  
-- Validation doğruluğu: **%86**
+### 1️⃣ GameCamNet (Custom CNN)
 
-### **2. ResNet50 (Transfer Learning)**
-- ImageNet üzerinde önceden eğitilmiş  
-- Son katman 5 sınıfa göre yeniden eğitildi  
-- Validation doğruluğu: **%99**
+Sıfırdan tasarlanmış, hafif ve eğitim süresi kısa bir Evrişimsel Sinir Ağı.
+
+- 4 adet **Conv–BatchNorm–ReLU** bloğu  
+- Ardından **MaxPool** katmanları  
+- Son kısımda:
+  - `AdaptiveAvgPool2d`
+  - 2 adet **Fully Connected** katman
+  - Dropout ile düzenlileştirme  
+- Amaç: Basit, hızlı ve baştan sona kendi tasarlanmış bir baseline model elde etmek  
+- Validation doğruluğu: **≈ %86**
+
+Bu model, özellikle daha basit sahneleri ayırt etmede başarılı olsa da, benzer perspektiflerde (örn. FPS vs TPS) zaman zaman hataya düşebilmektedir.
 
 ---
 
+### 2️⃣ ResNet50 (Transfer Learning)
+
+ImageNet üzerinde önceden eğitilmiş, derin ve güçlü bir model. Bu projede transfer learning yaklaşımıyla ince ayar yapılmıştır.
+
+- Temel mimari: **ResNet50**
+- Önceden eğitilmiş katmanlar kullanıldı
+- Son tam bağlı katman, **5 sınıfa karşılık gelecek şekilde** yeniden tanımlandı
+- Eğitim sadece son katman(lar) üzerinde yoğunlaştırıldı
+- Validation doğruluğu: **≈ %99**
+
+Bu model, farklı oyunlardan gelen görüntülerde yüksek genelleme başarısı göstererek kamera perspektiflerini çok büyük oranda doğru tahmin edebilmektedir.
+
+---
+
+## 📊 Eğitim Sonuçları (Özet)
+
+| Model              | Doğruluk (Val) | Notlar                                   |
+|--------------------|----------------|------------------------------------------|
+| GameCamNet (CNN)   | ≈ %86          | Hafif, hızlı fakat karmaşık sahnelerde zorlanıyor |
+| ResNet50           | ≈ %99          | Güçlü genelleme, üretim için seçilen model        |
+
+---
+## Eğitim Metrikleri
+| Metrik               | GameCamNet (CNN) | ResNet50 (TL) |
+| -------------------- | ---------------- | ------------- |
+| Eğitim Epoch Sayısı  | 15               | 10            |
+| Eğitim Doğruluğu     | %89.1            | %99.5         |
+| Validation Doğruluğu | %86.4            | %98.9         |
+| En İyi Epoch         | 12               | 6             |
+| Validation Loss      | 0.35             | 0.03          |
+| Overfitting Eğilimi  | Orta             | Düşük         |
+| Eğitim Süresi        | 25–30 dk         | ~1.5 saat     |
+
+---
 ## ⚙️ Kurulum
+
+Projeyi yerel ortamınızda çalıştırmak için:
 
 ```bash
 # Sanal ortam oluştur
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Sanal ortamı aktif et
+# Windows:
+venv\Scripts\activate
+# macOS / Linux:
+source venv/bin/activate
 
 # Gereksinimleri yükle
 pip install -r requirements.txt
 
 # Uygulamayı başlat
 python app.py
-
 ```
-
-# Uygulama çalıştığında tarayıcıdan şu adrese git:
-👉 http://127.0.0.1:5000
 
 ```bash
 Kullanıcı görüntü yükler →
@@ -74,14 +140,16 @@ Kullanıcı görüntü yükler →
 
 | Perspektif           | Görsel                                                     | ResNet50 Doğruluğu |
 | -------------------- | ---------------------------------------------------------- | ------------------ |
-| **Isometric**        | ![Isometric](static/uploads/isometric-analiz.png)          | %97.2              |
-| **Top-Down**         | ![Top-Down](static/uploads/top-down-analiz.png)            | %99.8              |
-| **Third-Person**     | ![Third-Person](static/uploads/third-analiz.png)           | %99.5              |
-| **Side-Scroller**    | ![Side-Scroller](static/uploads/sidescroll-analiz.png)     | %83.1              |
-| **First-Person (1)** | ![First-Person](static/uploads/first-person-analiz.png)    | %70.4              |
-| **First-Person (2)** | ![First-Person 2](static/uploads/first-person-analiz2.png) | %84.8              |
+| **Isometric**        | ![Isometric](uploads/isometric-analiz.png)          | %97.2              |
+| **Top-Down**         | ![Top-Down](uploads/top-down-analiz.png)            | %99.8              |
+| **Third-Person**     | ![Third-Person](uploads/third-analiz.png)           | %99.5              |
+| **Side-Scroller**    | ![Side-Scroller](uploads/sidescroll-analiz.png)     | %83.1              |
+| **First-Person (1)** | ![First-Person](uploads/first-person-analiz.png)    | %70.4              |
+| **First-Person (2)** | ![First-Person 2](uploads/first-person-analiz2.png) | %84.8              |
 
 
+
+```bash
 InfiniteX/
 │
 ├── app.py                # Flask sunucusu
@@ -96,7 +164,7 @@ InfiniteX/
 │   ├── result.html
 │   └── docs.html
 └── README.md
-
+```
 
 👩‍💻 Geliştirici Notu
 
